@@ -1,0 +1,36 @@
+{
+  "author": "flash",
+  "bugs": {
+    "url": "https://github.com/celo-org/celo-composer/issues"
+  },
+  "description": "Custom Celo Composer project.",
+  "homepage": "https://github.com/celo-org/celo-composer/blob/main/README.md",
+  "keywords": [
+    "celo-composer",
+    "celo"
+  ],
+  "license": "MIT",
+  "name": "minipay",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/celo-org/celo-composer.git"
+  },
+  "scripts": {
+    "react-app:dev": "yarn workspace @minipay/react-app dev",
+    "react-app:build": "yarn workspace @minipay/react-app build",
+    "react-app:start": "yarn workspace @minipay/react-app start",
+    "react-app:lint": "yarn workspace @minipay/react-app lint",
+    "hardhat:compile": "yarn workspace @minipay/hardhat compile",
+    "hardhat:tsc": "yarn workspace @minipay/hardhat tsc",
+    "hardhat:build": "yarn workspace @minipay/hardhat build",
+    "hardhat:clean": "yarn workspace @minipay/hardhat clean",
+    "hardhat:run:node": "yarn workspace @minipay/hardhat run:node",
+    "hardhat:test": "yarn workspace @minipay/hardhat test",
+    "hardhat:prettier": "yarn workspace @minipay/hardhat prettier"
+  },
+  "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ]
+}
