@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
+import WorldIDVerification from '../components/WorldIDVerification';
+
 
 export default function Home() {
   const [userAddress, setUserAddress] = useState('');
@@ -28,7 +30,10 @@ export default function Home() {
       {isConnected ? (
         <div className="h2 text-center">Your address: {userAddress}</div>
       ) : (
-        <div>No Wallet Connected</div>
+        // <div>No Wallet Connected</div>
+        <div>
+        <WorldIDVerification />
+      </div>
       )}
     </div>
   );
