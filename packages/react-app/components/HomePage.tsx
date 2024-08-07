@@ -1,23 +1,25 @@
-import { useEffect, useState } from 'react';
-import { useAccount } from 'wagmi';
+'use client'
 
-export default function Home() {
-  const [userAddress, setUserAddress] = useState('');
-  const [isMounted, setIsMounted] = useState(false);
-  const { address, isConnected } = useAccount();
+import { useEffect, useState } from 'react'
+import { useAccount } from 'wagmi'
+
+export default function HomePage() {
+  const [userAddress, setUserAddress] = useState('')
+  const [isMounted, setIsMounted] = useState(false)
+  const { address, isConnected } = useAccount()
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     if (isConnected && address) {
-      setUserAddress(address);
+      setUserAddress(address)
     }
-  }, [address, isConnected]);
+  }, [address, isConnected])
 
   if (!isMounted) {
-    return null;
+    return null
   }
 
   return (
@@ -31,5 +33,5 @@ export default function Home() {
         <div>No Wallet Connected</div>
       )}
     </div>
-  );
+  )
 }
