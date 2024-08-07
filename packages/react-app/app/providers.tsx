@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Layout from '../components/Layout'
 import { WorldIDProvider } from '@/contexts/WorldIDContext'
 
+
 const connectors = connectorsForWallets(
   [
     {
