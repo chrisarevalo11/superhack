@@ -1,7 +1,6 @@
 import { db } from './config'
 
 const prefix = 'farmer_attestations' // Replace with your actual table name
-let actualTableName: string | null = null // This will store the actual table name
 
 export async function createTable() {
   const { meta: create } = await db
@@ -16,17 +15,12 @@ export async function createTable() {
     );`)
     .run()
     
-  actualTableName = create.txn?.name || null
+  const actualTableName = create.txn?.name || null
 
   console.log(`Table ${prefix} created successfully`+ JSON.stringify(actualTableName))
 }
 
-function getTableName() {
-  if (!actualTableName) {
-    throw new Error("Table has not been created yet. Call createTable() first.")
-  }
-  return actualTableName
-}
+
 
 export async function insertAttestationRequest(farmerAddress: string, checkpoint: string, ipfsHash: string) {
   console.log("Inserting attestation request")
@@ -38,7 +32,6 @@ export async function insertAttestationRequest(farmerAddress: string, checkpoint
 
   await insert?.txn?.wait() ?? Promise.resolve()
   console.log(`Attestation request inserted for farmer ${farmerAddress}`)
-  console.log("table name ",actualTableName)
 }
 
 export async function getPendingAttestationRequests() {
@@ -67,8 +60,8 @@ export async function updateAttestationStatus(id:number,address: string, status:
   console.log(`Attestation status updated for farmer ${address}`)
 }
 
-export async function getAttestationById(address: string) {
+export async function getAttestationById(id: number) {
   const tableName = "farmer_attestations_11155420_138"
-  const { results } = await db.prepare(`SELECT * FROM ${tableName} WHERE farmer_address = ?;`).bind(address).all()
+  const { results } = await db.prepare(`SELECT * FROM ${tableName} WHERE id = ?;`).bind(id).all()
   return results[0] || null
 }

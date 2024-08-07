@@ -3,12 +3,13 @@
 import { EAS, SchemaEncoder, Offchain, OffchainAttestationVersion, OffchainConfig } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import { SCHEMAS } from "./schema";
-import { getPendingAttestationRequests, updateAttestationStatus } from "./database";
+import { getPendingAttestationRequests, updateAttestationStatus,getAttestationById } from "./database";
 import { signer } from "./config";
 import { uploadToIPFS,getFromIPFS } from "./ipfsService"; // Import fetchFromIPFS
 
 const EAS_CONTRACT_ADDRESS = "0x4200000000000000000000000000000000000021"; // Replace with the actual EAS contract address for OP Sepolia
 const eas = new EAS(EAS_CONTRACT_ADDRESS);
+
 
 export async function getPendingRequests(){
     return await getPendingAttestationRequests();
@@ -22,6 +23,8 @@ export async function createAttestation(
 ) {
     console.log("hi from createAttestation");
     eas.connect(signer);
+    //here the signer is the attester we have to change it accordingly
+    //for now I have taken it from config
 
     const schemaEncoder = new SchemaEncoder(SCHEMAS[checkpointType].schema);
     console.log(farmerAddress);
@@ -102,6 +105,26 @@ export async function verifyAttestationFromIPFS(ipfsHash: string, farmer_address
     }
 }
 
-export async function getAttestationInfo(attestationId: number) {
-    
-}
+export async function getFarmerDataFromIPFS(requestId: string) {
+    const id=parseInt(requestId)
+    console.log("hi from getFaremreDatafromIpfs id",typeof(id),id)
+    const attestation  = await getAttestationById(id) ;
+    if (!attestation) {
+      throw new Error("Attestation not found");
+    }
+    console.log("attestation data",attestation)
+  
+    const farmerData = await getFromIPFS(String(attestation.ipfs_hash));
+
+    const textData: Record<string, string> = {};
+    const images: Record<string, string> = {};
+  
+    for (const [key, value] of Object.entries(farmerData)) {
+      if (typeof value === 'string' && value.startsWith('data:image')) {
+        images[key] = value.split(',')[1];
+      } else {
+        textData[key] = value as string;
+      }
+    }
+    return { textData, images };
+  }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface AttestationRequest {
   id: number
@@ -9,9 +10,10 @@ interface AttestationRequest {
   timestamp: number
 }
 
+
 const AttesterDashboard: React.FC = () => {
   const [pendingRequests, setPendingRequests] = useState<AttestationRequest[]>([])
-
+  const router = useRouter()
   useEffect(() => {
     fetchPendingRequests()
   }, [])
@@ -38,7 +40,7 @@ const AttesterDashboard: React.FC = () => {
         requestId: request.id,
         checkpoint: request.checkpoint,
         farmerAddress: request.farmer_address,
-        ipfsHash: request.ipfs_hash
+        ipfsHash: request.ipfs_hash,
       })
     })
     const data = await response.json()
@@ -48,6 +50,10 @@ const AttesterDashboard: React.FC = () => {
     }
   }
 
+  const handleView = (request: AttestationRequest) => {
+    router.push(`/farmer-data/${request.id}`)
+  }
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Pending Attestation Requests</h2>
@@ -55,6 +61,13 @@ const AttesterDashboard: React.FC = () => {
         {pendingRequests.map((request) => (
           <li key={request.id} className="flex justify-between items-center bg-gray-100 p-2 rounded">
             <span>Farmer: {request.farmer_address} | Checkpoint: {request.checkpoint}</span>
+            <button
+              onClick={() => handleView(request)}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2"
+            >
+              View Data
+            </button>
+            
             <button
               onClick={() => handleAttest(request)}
               className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
