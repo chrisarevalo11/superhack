@@ -7,6 +7,8 @@ import { WagmiProvider, createConfig, http } from 'wagmi'
 import { celo, celoAlfajores } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Layout from '../components/Layout'
+import { WorldIDProvider } from '@/contexts/WorldIDContext'
+
 
 const connectors = connectorsForWallets(
   [
@@ -37,9 +39,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
-          <Layout>
-            {children}
-          </Layout>
+          <WorldIDProvider>
+            <Layout>
+              {children}
+            </Layout>
+          </WorldIDProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
