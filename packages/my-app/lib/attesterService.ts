@@ -3,15 +3,15 @@
 import { EAS, SchemaEncoder, Offchain, OffchainAttestationVersion, OffchainConfig } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import { SCHEMAS } from "./schema";
-import { getPendingAttestationRequests, updateAttestationStatus,getAttestationById } from "./database";
-import {  signer, transaction } from "./config";
+import { getPendingAttestationRequests, updateAttestationStatus,getAttestationById, getAttestationByAddress } from "./database";
+import {  signer} from "./config";
 import { uploadToIPFS,getFromIPFS } from "./ipfsService"; // Import fetchFromIPFS
 import { Address } from "viem";
 // import { SchemaRegistry } from "@ethereum-attestation-service/eas-sdk";
 
 
-    const EAS_CONTRACT_ADDRESS = "0x4200000000000000000000000000000000000021"; // Replace with the actual EAS contract address for OP Sepolia
-    const eas = new EAS(EAS_CONTRACT_ADDRESS);
+const EAS_CONTRACT_ADDRESS = "0x4200000000000000000000000000000000000021"; // Replace with the actual EAS contract address for OP Sepolia
+const eas = new EAS(EAS_CONTRACT_ADDRESS);
 // const schemaRegistryContractAddress = "0x4200000000000000000000000000000000000020"; 
 // const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress);
 // schemaRegistry.connect(signer);
@@ -30,7 +30,7 @@ export async function createAttestation(
     ipfsHash: string
   ) {
 
-    console.log("hi from createAttestation");
+    console.log("hi from createAttestation",requestId);
     
     // const transaction = await schemaRegistry.register({
     //       schema,
@@ -77,7 +77,7 @@ export async function createAttestation(
           { name: "landPreparationDetails", value: farmerData.landPreparationDetails, type: "string" },
           { name: "weatherData", value: farmerData.weatherForecast, type: "string" },
           { name: "cropTypeSelected", value: farmerData.cropTypeSelected, type: "string" },
-          { name: "location", value: farmerData.location, type: "string" },
+          { name: "location", value: farmerData.geolocation, type: "string" },
           { name: "timestamp", value: farmerData.timestamp, type: "uint56" }
         ]);
         break;
@@ -108,8 +108,6 @@ export async function createAttestation(
   
     console.log(encodedData);
   
-   
-  
     const offchainAttestation = await offchain.signOffchainAttestation({
       recipient: farmerAddress,
       expirationTime: BigInt(0),
@@ -138,13 +136,23 @@ export async function createAttestation(
     return offchainAttestation.uid;
   }
 
-export async function verifyAttestationFromIPFS(ipfsHash: string, farmer_address: string) {
-    // Fetch the JSON string back from IPFS
+export async function verifyAttestationFromIPFS(farmer_address: Address) {
+    console.log("hi from verifyAttestation")
+   
+    const attestation  = await getAttestationByAddress(farmer_address) ;
+    if (!attestation) {
+      throw new Error("Attestation Request not found");
+    }
+    if(!attestation.attestation_ipfs_hash){
+        console.log("attestation not found")
+        throw new Error("Attestation not found");
+    }
+    console.log(attestation)
+    console.log("hi after fetching attestation")
+    const fetchedJsonString = await getFromIPFS(String(attestation.attestation_ipfs_hash));
     
-    const fetchedJsonString = await getFromIPFS(ipfsHash);
-    
-    console.log("Fetched from IPFS:", fetchedJsonString);
-    console.log("Fetched IPFS type:", typeof fetchedJsonString);
+    // console.log("Fetched from IPFS:", fetchedJsonString);
+    // console.log("Fetched IPFS type:", typeof fetchedJsonString);
 
     // Convert the fetched JSON string back to an object, handling BigInt conversion
     const offchainAttestation = JSON.parse(JSON.stringify(fetchedJsonString), (key, value) => {
@@ -168,7 +176,7 @@ export async function verifyAttestationFromIPFS(ipfsHash: string, farmer_address
     // Verify the attestation
     try {
         const isValidAttestation = offchain.verifyOffchainAttestationSignature(
-            farmer_address,
+            signer.address,
             offchainAttestation
         );
         console.log("Is the attestation valid?", isValidAttestation);

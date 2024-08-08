@@ -14,13 +14,19 @@ export const db = new Database({
   signer
 })
 
-const schemaRegistryContractAddress = "0x4200000000000000000000000000000000000020"; // Sepolia 0.26
-const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress);
+// const schemaRegistryContractAddress = "0x4200000000000000000000000000000000000020"; // Sepolia 0.26
+// const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress);
 
-schemaRegistry.connect(signer);
+// schemaRegistry.connect(signer);
 
-const schemaUID = "0x945eed2588b313c52c5012325d1cf8ec3d59f901dbc1379493e114d73df9e655";
+// const schema = 'uint256 eventId, uint8 voteIndex';
+// const resolverAddress = '0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0'; // Sepolia 0.26
+// const revocable = true;
 
-export const schemaRecord = async()=> {
-  await schemaRegistry.getSchema({ uid: schemaUID });
-}
+// export const transaction = async()=>{
+//   await schemaRegistry.register({
+//     schema,
+//     resolverAddress,
+//     revocable
+// })};
+
