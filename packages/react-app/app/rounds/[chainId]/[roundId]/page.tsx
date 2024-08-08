@@ -25,7 +25,7 @@ export default function RoundPage({ params }: { params: {chainId: number,roundId
             {/* <Link href={`/${chainId}/rounds/${params.id}/fund`}> */}
               {/* <Button variant={"outline"}>Fund Round</Button> */}
             {/* </Link> */}
-            <Link href={`/rounds/${roundId}/apply`}>
+            <Link href={`/rounds/${chainId}/${roundId}/apply`}>
               <Button>Apply to Round</Button>
             </Link>
           </div>
