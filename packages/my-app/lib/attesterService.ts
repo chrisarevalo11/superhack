@@ -4,71 +4,143 @@ import { EAS, SchemaEncoder, Offchain, OffchainAttestationVersion, OffchainConfi
 import { ethers } from "ethers";
 import { SCHEMAS } from "./schema";
 import { getPendingAttestationRequests, updateAttestationStatus,getAttestationById } from "./database";
-import { signer } from "./config";
+import {  signer, transaction } from "./config";
 import { uploadToIPFS,getFromIPFS } from "./ipfsService"; // Import fetchFromIPFS
+import { Address } from "viem";
+// import { SchemaRegistry } from "@ethereum-attestation-service/eas-sdk";
 
-const EAS_CONTRACT_ADDRESS = "0x4200000000000000000000000000000000000021"; // Replace with the actual EAS contract address for OP Sepolia
-const eas = new EAS(EAS_CONTRACT_ADDRESS);
 
+    const EAS_CONTRACT_ADDRESS = "0x4200000000000000000000000000000000000021"; // Replace with the actual EAS contract address for OP Sepolia
+    const eas = new EAS(EAS_CONTRACT_ADDRESS);
+// const schemaRegistryContractAddress = "0x4200000000000000000000000000000000000020"; 
+// const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress);
+// schemaRegistry.connect(signer);
+// const schema = 'uint256 eventId, uint8 voteIndex,uint8 Jaba';
+// const resolverAddress = '0x8Fa587156B31D7FBd226304B9d0DD9d14d2a2805';
+// const revocable = true;
 
 export async function getPendingRequests(){
     return await getPendingAttestationRequests();
 }
 
 export async function createAttestation(
-  requestId: number,
-  farmerAddress: string,
-  checkpointType: keyof typeof SCHEMAS,
-  ipfsHash: string
-) {
+    requestId: number,
+    farmerAddress: Address,
+    checkpointType: keyof typeof SCHEMAS,
+    ipfsHash: string
+  ) {
+
     console.log("hi from createAttestation");
+    
+    // const transaction = await schemaRegistry.register({
+    //       schema,
+    //       resolverAddress,
+    //       revocable
+    //   });
+    //   try{
+
+    // const transactionReceipt = await transaction.wait();
+    // console.log(transaction,"this is transaction")
+    //   }catch(error){
+    //     console.log(error)
+    //   }
+
+    // const schemaRecord = await schemaRegistry.getSchema({ uid: '0x945eed2588b313c52c5012325d1cf8ec3d59f901dbc1379493e114d73df9e655' });
+    // // eas.connect(signer);
+    // console.log(schemaRecord)
+    // console.log(signer)
+
     eas.connect(signer);
-    //here the signer is the attester we have to change it accordingly
-    //for now I have taken it from config
-
+    const offchain=await eas.getOffchain()
+    
     const schemaEncoder = new SchemaEncoder(SCHEMAS[checkpointType].schema);
-    console.log(farmerAddress);
-
-    const encodedData = schemaEncoder.encodeData([
-        { name: "farmer", value: "0x4913AbCD40a9455a28134b4ccc37f4f95225e593", type: "address" },
-        { name: "soilFertilityReportHash", value: "0x204", type: "string" },
-        { name: "landPreparationDetails", value: "0x204", type: "string" },
-        { name: "weatherData", value: "0x204", type: "string" },
-        { name: "cropTypeSelected", value: "hi", type: "string" },
-        { name: "timestamp", value: 10, type: "uint56" }
-    ]);
-
+    // const schemaEncoder=new SchemaEncoder(schema)
+  
+    const farmerInfo = async () => {
+      const url = new URL('/api/attester/get/farmerInfo', 'http://localhost:4000');
+      url.searchParams.set('requestId', requestId.toString());
+      const response = await fetch(url.toString());
+      const data = await response.json();
+      console.log(data.farmerData.textData)
+      return data.farmerData.textData;
+    };
+  
+    const farmerData = await farmerInfo();
+    console.log(farmerData)
+  
+    let encodedData;
+    
+    switch (checkpointType) {
+      case 'PRE_SOWING':
+        encodedData = schemaEncoder.encodeData([
+          { name: "farmer", value: farmerAddress, type: "address" },
+          { name: "landPreparationDetails", value: farmerData.landPreparationDetails, type: "string" },
+          { name: "weatherData", value: farmerData.weatherForecast, type: "string" },
+          { name: "cropTypeSelected", value: farmerData.cropTypeSelected, type: "string" },
+          { name: "location", value: farmerData.location, type: "string" },
+          { name: "timestamp", value: farmerData.timestamp, type: "uint56" }
+        ]);
+        break;
+      case 'MID_GROWTH':
+        encodedData = schemaEncoder.encodeData([
+          { name: "farmer", value: farmerAddress, type: "address" },
+          { name: "pestDiseaseReport", value: farmerData.pestDiseaseReport, type: "string" },
+          { name: "irrigationFertilizerLog", value: farmerData.irrigationFertilizerLog, type: "string" },
+          { name: "weatherConditions", value: farmerData.weatherConditions, type: "string" },
+          { name: "cropHealthScore", value: farmerData.cropHealthScore, type: "uint32" },
+          { name: "location", value: farmerData.geolocation, type: "string" },
+          { name: "timestamp", value: farmerData.timestamp, type: "uint56" }
+        ]);
+        break;
+      case 'PRE_HARVEST':
+        encodedData = schemaEncoder.encodeData([
+          { name: "farmer", value: farmerAddress, type: "address" },
+          { name: "yieldEstimation", value: farmerData.yieldEstimation, type: "uint32" },
+          { name: "harvestPlanningDetails", value: farmerData.harvestPlanningDetails, type: "string" },
+          { name: "marketPriceAnalysis", value: farmerData.marketPriceAnalysis, type: "string" },
+          { name: "location", value: farmerData.geolocation, type: "string" },
+          { name: "timestamp", value: farmerData.timestamp, type: "uint56" }
+        ]);
+        break;
+      default:
+        throw new Error(`Unsupported checkpoint type: ${checkpointType}`);
+    }
+  
     console.log(encodedData);
-
-    const offchain = await eas.getOffchain();
-
+  
+   
+  
     const offchainAttestation = await offchain.signOffchainAttestation({
-        recipient: "0x4913AbCD40a9455a28134b4ccc37f4f95225e593",
-        expirationTime: BigInt(0),
-        time: BigInt(Math.floor(Date.now() / 1000)),
-        revocable: true,
-        nonce: BigInt(0),
-        schema: SCHEMAS[checkpointType].uid,
-        refUID: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        data: encodedData,
+      recipient: farmerAddress,
+      expirationTime: BigInt(0),
+      time: BigInt(Math.floor(Date.now() / 1000)),
+      revocable: true,
+      nonce: BigInt(0),
+      schema: SCHEMAS[checkpointType].uid,
+      refUID: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      data: encodedData,
     }, signer);
-
+    console.log(
+        "attestaion made",offchainAttestation
+    )
     const jsonString = JSON.stringify(offchainAttestation, (key, value) =>
-        typeof value === 'bigint' ? value.toString() : value
+      typeof value === 'bigint' ? value.toString() : value
     );
-
-    // Upload to IPFS
+  
     const attestationIpfsHash = await uploadToIPFS(jsonString);
     console.log("Uploaded to IPFS with hash:", attestationIpfsHash);
-
-    // Optionally update the database with the new status and attestation IPFS hash
-    await updateAttestationStatus(requestId, farmerAddress, "attested", attestationIpfsHash)
-
+  
+    try{
+        await updateAttestationStatus(requestId, farmerAddress, "attested", attestationIpfsHash)
+    }catch(error){
+        console.log(error)
+    }
     return offchainAttestation.uid;
-}
+  }
 
 export async function verifyAttestationFromIPFS(ipfsHash: string, farmer_address: string) {
     // Fetch the JSON string back from IPFS
+    
     const fetchedJsonString = await getFromIPFS(ipfsHash);
     
     console.log("Fetched from IPFS:", fetchedJsonString);

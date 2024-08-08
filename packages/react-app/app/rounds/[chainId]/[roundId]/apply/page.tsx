@@ -4,11 +4,12 @@ import React, { useState } from 'react'
 import FarmerForm from '@/components/FarmerForm'
 import { CheckpointType } from '@/lib/schema'
 
+
 const checkpoints: CheckpointType[] = ['PRE_SOWING', 'MID_GROWTH', 'PRE_HARVEST']
 
 export default function FarmerPage() {
   const [selectedCheckpoint, setSelectedCheckpoint] = useState<CheckpointType | null>(null)
-
+  
   const handleSubmit = async (farmerAddress: string, checkpoint: CheckpointType, data: any) => {
     console.log("Submitting data for", checkpoint)
     console.log(data)
