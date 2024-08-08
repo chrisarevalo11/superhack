@@ -1,4 +1,5 @@
 # EasyFarm
+
 ### Problem
 
 - **Inadequate Financial Products**: Existing credit options do not meet the specific needs of small and medium-sized farmers.
@@ -17,8 +18,8 @@ Implementing the `RFPSimpleStrategy` within the Allo protocol provides a decentr
 
 This approach ensures a structured and reliable process for agricultural financing, addressing key issues of transparency and risk management.
 
-
 ## Funding strategy
+
 ```mermaid
 sequenceDiagram
     participant Attester
@@ -37,10 +38,8 @@ sequenceDiagram
     Allo-->>-RFPSimpleStrategy: allocate() (accepts a recipient and allocate proposal bid)
     PoolManager->> RFPSimpleStrategy: setMilestones()
     Farmer->> RFPSimpleStrategy: submitUpcomingMilestone()
-    PoolManager->> RFPSimpleStrategy: rejectMilestone()
-    Farmer->> RFPSimpleStrategy: submitUpcomingMilestone()
+    Attester->>RFPSimpleStrategy: attestMilestone()
     PoolManager->>+Allo: distribute() ( mnextilestone for recipient)
     Allo-->>-RFPSimpleStrategy: distribute() (next milestone for recipient)
-    Attester->>RFPSimpleStrategy: attestDistribution()
     PoolManager->>RFPSimpleStrategy: setPoolActive() to close pool
 ```
