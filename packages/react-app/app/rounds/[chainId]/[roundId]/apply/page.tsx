@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import FarmerForm from '../../components/FarmerForm'
-import { CheckpointType } from '../../lib/schema'
+import FarmerForm from '@/components/FarmerForm'
+import { CheckpointType } from '@/lib/schema'
 
 const checkpoints: CheckpointType[] = ['PRE_SOWING', 'MID_GROWTH', 'PRE_HARVEST']
 
