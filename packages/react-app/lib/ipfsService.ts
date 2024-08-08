@@ -6,12 +6,8 @@ const JWT = process.env.PINATA_JWT as string; // Your Pinata JWT
 
 
 export async function uploadToIPFS(data: any): Promise<string> {
-    console.log("hi from uploadIPFS "+console.log(process.env.PINATA_JWT))
-    // const jsonString = JSON.stringify(data, (key, value) =>
-    //     typeof value === 'bigint' ? value.toString() : value
-    // );
-    
-  
+  console.log("hi from uploadIPFS ")
+
   try {
     const response = await axios.post(
       'https://api.pinata.cloud/pinning/pinJSONToIPFS',
