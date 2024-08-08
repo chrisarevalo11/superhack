@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@allo-team/kit": "link:@allo-team/kit",
     "@headlessui/react": "^1.7.19",
     "@heroicons/react": "^2.1.5",
     "@rainbow-me/rainbowkit": "^2.1.4",

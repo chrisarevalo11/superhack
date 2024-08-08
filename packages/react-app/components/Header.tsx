@@ -9,7 +9,7 @@ import { injected } from 'wagmi/connectors';
 export default function Header() {
   const [hideConnectBtn, setHideConnectBtn] = useState(false);
   const { connect } = useConnect();
-
+  // console.log('hi')
   useEffect(() => {
     if (window.ethereum && window.ethereum.isMiniPay) {
       setHideConnectBtn(true);

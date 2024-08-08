@@ -1,16 +1,16 @@
 'use client'
 
 import React, { useState } from 'react'
-import FarmerForm from '../../components/FarmerForm'
-import { CheckpointType } from '../../lib/schema'
-import { Address } from 'viem'
+import FarmerForm from '@/components/FarmerForm'
+import { CheckpointType } from '@/lib/schema'
+
 
 const checkpoints: CheckpointType[] = ['PRE_SOWING', 'MID_GROWTH', 'PRE_HARVEST']
 
 export default function FarmerPage() {
   const [selectedCheckpoint, setSelectedCheckpoint] = useState<CheckpointType | null>(null)
   
-  const handleSubmit = async (farmerAddress: Address, checkpoint: CheckpointType, data: any) => {
+  const handleSubmit = async (farmerAddress: string, checkpoint: CheckpointType, data: any) => {
     console.log("Submitting data for", checkpoint)
     console.log(data)
     const response = await fetch('/api/farmer', {
