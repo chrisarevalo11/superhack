@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 4000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 4000",
     "lint": "next lint"
   },
   "dependencies": {
@@ -25,9 +25,9 @@
     "react-dom": "^18",
     "react-hook-form": "^7.52.2",
     "tailwind-merge": "^2.4.0",
-    "viem": "2.x",
     "wagmi": "^2.12.4",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "viem": "^2.19.2"
   },
   "devDependencies": {
     "@types/node": "^20",

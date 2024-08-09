@@ -1,4 +1,5 @@
 import { db } from './config'
+import { Address } from 'viem'
 
 const prefix = 'farmer_attestations' // Replace with your actual table name
 
@@ -64,4 +65,12 @@ export async function getAttestationById(id: number) {
   const tableName = "farmer_attestations_11155420_138"
   const { results } = await db.prepare(`SELECT * FROM ${tableName} WHERE id = ?;`).bind(id).all()
   return results[0] || null
+}
+
+export async function getAttestationByAddress(address: Address) {
+
+  const tableName = "farmer_attestations_11155420_138"
+  const { results } = await db.prepare(`SELECT * FROM ${tableName} WHERE farmer_address = ?;`).bind(address).all()
+  return results[0] || null
+
 }

@@ -20,7 +20,7 @@ const AttesterDashboard: React.FC = () => {
 
   const fetchPendingRequests = async () => {
     console.log("hi from fetchpending req")
-    const response = await fetch('/api/attester')
+    const response = await fetch('/api/attester/get/pendingRequests')
     const data = await response.json()
     console.log(JSON.stringify(data));
     if(response.status==200){
@@ -33,7 +33,7 @@ const AttesterDashboard: React.FC = () => {
   }
 
   const handleAttest = async (request: AttestationRequest) => {
-    const response = await fetch('/api/attester', {
+    const response = await fetch('/api/attester/post', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
