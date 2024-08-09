@@ -11,7 +11,7 @@ export default function RoundPage({ params }: { params: {chainId: number,roundId
   const chainId = params.chainId;
   const roundId = params.roundId;
   return (
-    <section className="space-y-8">
+    <section className="space-y-8 display-cards">
       <RoundDetails
         roundId={roundId}
         chainId={chainId}

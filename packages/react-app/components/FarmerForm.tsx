@@ -240,7 +240,7 @@ const FarmerForm: React.FC<FarmerFormProps> = ({ checkpoint, onSubmit, onCancel 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className=" max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">{checkpoint.replace('_', ' ')} Attestation Request</h2>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">Farmer Address</label>
