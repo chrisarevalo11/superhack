@@ -1,6 +1,12 @@
 // lib/attesterService.ts
 
-import { EAS, SchemaEncoder, Offchain, OffchainAttestationVersion, OffchainConfig } from "@ethereum-attestation-service/eas-sdk";
+import {
+  EAS,
+  SchemaEncoder,
+  Offchain,
+  OffchainAttestationVersion,
+  OffchainConfig,
+} from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import { SCHEMAS } from "./schema";
 import { getPendingAttestationRequests, updateAttestationStatus,getAttestationById, getAttestationByAddress } from "./database";
@@ -154,14 +160,17 @@ export async function verifyAttestationFromIPFS(farmer_address: Address) {
     // console.log("Fetched from IPFS:", fetchedJsonString);
     // console.log("Fetched IPFS type:", typeof fetchedJsonString);
 
-    // Convert the fetched JSON string back to an object, handling BigInt conversion
-    const offchainAttestation = JSON.parse(JSON.stringify(fetchedJsonString), (key, value) => {
-        if (typeof value === 'string' && /^[0-9]+$/.test(value)) {
-            return BigInt(value);
-        }
-        return value;
-    });
+  console.log("Fetched from IPFS:", fetchedJsonString);
+  console.log("Fetched IPFS type:", typeof fetchedJsonString);
 
+  // Convert the fetched JSON string back to an object, handling BigInt conversion
+  const offchainAttestation = JSON.parse(
+    JSON.stringify(fetchedJsonString),
+    (key, value) => {
+      if (typeof value === "string" && /^[0-9]+$/.test(value)) {
+        return BigInt(value);
+      }
+      return value;})
     console.log("Reconstructed offchainAttestation:", offchainAttestation);
 
     // Prepare EAS config for verification
@@ -186,25 +195,25 @@ export async function verifyAttestationFromIPFS(farmer_address: Address) {
 }
 
 export async function getFarmerDataFromIPFS(requestId: string) {
-    const id=parseInt(requestId)
-    console.log("hi from getFaremreDatafromIpfs id",typeof(id),id)
-    const attestation  = await getAttestationById(id) ;
-    if (!attestation) {
-      throw new Error("Attestation not found");
-    }
-    console.log("attestation data",attestation)
-  
-    const farmerData = await getFromIPFS(String(attestation.ipfs_hash));
-
-    const textData: Record<string, string> = {};
-    const images: Record<string, string> = {};
-  
-    for (const [key, value] of Object.entries(farmerData)) {
-      if (typeof value === 'string' && value.startsWith('data:image')) {
-        images[key] = value.split(',')[1];
-      } else {
-        textData[key] = value as string;
-      }
-    }
-    return { textData, images };
+  const id = parseInt(requestId);
+  console.log("hi from getFaremreDatafromIpfs id", typeof id, id);
+  const attestation = await getAttestationById(id);
+  if (!attestation) {
+    throw new Error("Attestation not found");
   }
+  console.log("attestation data", attestation);
+
+  const farmerData = await getFromIPFS(String(attestation.ipfs_hash));
+
+  const textData: Record<string, string> = {};
+  const images: Record<string, string> = {};
+
+  for (const [key, value] of Object.entries(farmerData)) {
+    if (typeof value === "string" && value.startsWith("data:image")) {
+      images[key] = value.split(",")[1];
+    } else {
+      textData[key] = value as string;
+    }
+  }
+  return { textData, images };
+}
