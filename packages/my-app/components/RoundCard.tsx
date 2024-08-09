@@ -20,7 +20,7 @@ export default function RoundCard({
   return (
     <div className="bg-gray-100 p-6 rounded-lg">
       <Image
-        className="h-40 rounded w-full object-cover object-center mb-6"
+        className="h-40 rounded w-full object-cover object-center mb-6 border-2 bg-white"
         width={300}
         height={160}
         src={image}

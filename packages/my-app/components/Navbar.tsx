@@ -32,7 +32,6 @@ function ResponsiveMenu(): JSX.Element {
     <>
       <ul className="lg:flex justify-center gap-5 items-center text-base hidden tracking-tighter">
         <NavLink href="/">Profile</NavLink>
-        <NavLink href="/attestations">Attestations</NavLink>
         <NavLink href="/create">New round</NavLink>
         <NavLink href="/rounds">Rounds</NavLink>
       </ul>
@@ -123,12 +122,6 @@ function ResponsiveSidebar({
         <ul className="text-whiteColor my-10 space-y-4">
           <NavLink href="/" onClick={() => setOpen((prev) => !prev)}>
             Profile
-          </NavLink>
-          <NavLink
-            href="/attestations"
-            onClick={() => setOpen((prev) => !prev)}
-          >
-            Attestations
           </NavLink>
           <NavLink href="/create" onClick={() => setOpen((prev) => !prev)}>
             New round
