@@ -1,0 +1,18 @@
+/* Base styles for all devices */
+.display-cards {
+  width: 90vw; /* Default width, usually for mobile */
+}
+
+/* Styles for larger screens (desktop) */
+@media (min-width: 768px) {
+  .display-cards {
+    width: 80vw; /* Adjust width for desktop */
+  }
+}
+
+/* Additional media queries for larger screens */
+@media (min-width: 1024px) {
+  .display-cards {
+    width: 65vw; /* Adjust width for even larger screens */
+  }
+}

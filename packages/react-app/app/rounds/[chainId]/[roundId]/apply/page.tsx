@@ -44,11 +44,13 @@ export default function FarmerPage() {
           ))}
         </div>
       ) : (
+        <div className = 'display-cards'>
         <FarmerForm 
           checkpoint={selectedCheckpoint} 
           onSubmit={handleSubmit} 
           onCancel={() => setSelectedCheckpoint(null)}
         />
+        </div>
       )}
     </div>
   )
