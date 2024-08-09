@@ -22,7 +22,6 @@ This approach ensures a structured and reliable process for agricultural financi
 
 ```mermaid
 sequenceDiagram
-    participant Attester
     participant Farmer
     participant PoolManager
     participant Allo
@@ -38,8 +37,8 @@ sequenceDiagram
     Allo-->>-RFPSimpleStrategy: allocate() (accepts a recipient and allocate proposal bid)
     PoolManager->> RFPSimpleStrategy: setMilestones()
     Farmer->> RFPSimpleStrategy: submitUpcomingMilestone()
-    Attester->>RFPSimpleStrategy: attestMilestone()
-    PoolManager->>+Allo: distribute() ( mnextilestone for recipient)
+    PoolManager->>RFPSimpleStrategy: attestMilestone()
+    PoolManager->>+Allo: distribute() ( next milestone for recipient)
     Allo-->>-RFPSimpleStrategy: distribute() (next milestone for recipient)
     PoolManager->>RFPSimpleStrategy: setPoolActive() to close pool
 ```
