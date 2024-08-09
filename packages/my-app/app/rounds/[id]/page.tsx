@@ -1,5 +1,6 @@
 import Clipboard from "@/components/Clipboard";
 import FarmerCard from "@/components/FarmerCard";
+import MilestoneCard from "@/components/MilestoneCard";
 import { Badge } from "@/components/ui/badge";
 import { formatAddress } from "@/lib/utils";
 import Image from "next/image";
@@ -13,7 +14,7 @@ export default function Round({ params }: { params: { id: number } }) {
           width={300}
           height={160}
           alt="content"
-          className="w-[85%] mx-auto md:w-[90%] sticky top-5"
+          className="w-[85%] mx-auto md:w-[90%] sticky top-20"
         />
       </div>
       <div className="flex flex-col md:w-[50%] mt-5 gap-5 p-2">
@@ -68,17 +69,37 @@ export default function Round({ params }: { params: { id: number } }) {
               name="Juan Vargas"
               address="0xDdC94BFde7C64117F35803AeA4FA4F98A7b4f57C"
             />
-            <FarmerCard
-              name="Juan Vargas"
-              address="0xDdC94BFde7C64117F35803AeA4FA4F98A7b4f57C"
+          </div>
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold">Milestone submissions:</h2>
+          <div className="mt-2 flex flex-col gap-2">
+            <MilestoneCard
+              milestoneNumber={1}
+              images={[
+                "/images/farmer.png",
+                "/images/farmer.png",
+                "/images/farmer.png",
+              ]}
+              description="Lorem ipsum dolor sit amet consectetur adipiscing elit arcu auctor, feugiat magnis fames commodo urna neque potenti quam luctus, augue justo nascetur elementum id condimentum viverra placerat. Primis dignissim nunc in mauris facilisi mollis tempor, blandit curae rutrum tortor ante."
             />
-            <FarmerCard
-              name="Juan Vargas"
-              address="0xDdC94BFde7C64117F35803AeA4FA4F98A7b4f57C"
+            <MilestoneCard
+              milestoneNumber={2}
+              images={[
+                "/images/farmer.png",
+                "/images/farmer.png",
+                "/images/farmer.png",
+              ]}
+              description="Lorem ipsum dolor sit amet consectetur adipiscing elit arcu auctor, feugiat magnis fames commodo urna neque potenti quam luctus, augue justo nascetur elementum id condimentum viverra placerat. Primis dignissim nunc in mauris facilisi mollis tempor, blandit curae rutrum tortor ante."
             />
-            <FarmerCard
-              name="Juan Vargas"
-              address="0xDdC94BFde7C64117F35803AeA4FA4F98A7b4f57C"
+            <MilestoneCard
+              milestoneNumber={3}
+              images={[
+                "/images/farmer.png",
+                "/images/farmer.png",
+                "/images/farmer.png",
+              ]}
+              description="Lorem ipsum dolor sit amet consectetur adipiscing elit arcu auctor, feugiat magnis fames commodo urna neque potenti quam luctus, augue justo nascetur elementum id condimentum viverra placerat. Primis dignissim nunc in mauris facilisi mollis tempor, blandit curae rutrum tortor ante."
             />
           </div>
         </div>
