@@ -1,5 +1,5 @@
 {
-  "name": "@minipay/react-app",
+  "name": "@easyfarm/minipay",
   "version": "0.1.0",
   "private": true,
   "scripts": {

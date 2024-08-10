@@ -3,31 +3,33 @@
   "bugs": {
     "url": "https://github.com/celo-org/celo-composer/issues"
   },
-  "description": "Custom Celo Composer project.",
-  "homepage": "https://github.com/celo-org/celo-composer/blob/main/README.md",
+  "description": "A protocol for capital distribution for the development of the communities",
   "keywords": [
-    "celo-composer",
-    "celo"
+    "superhack",
+    "celo",
+    "EAS",
+    "worldcoin",
+    "minipay"
   ],
   "license": "MIT",
-  "name": "minipay",
+  "name": "easyfarm",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/celo-org/celo-composer.git"
-  },
   "scripts": {
-    "react-app:dev": "yarn workspace @minipay/react-app dev",
-    "react-app:build": "yarn workspace @minipay/react-app build",
-    "react-app:start": "yarn workspace @minipay/react-app start",
-    "react-app:lint": "yarn workspace @minipay/react-app lint",
-    "hardhat:compile": "yarn workspace @minipay/hardhat compile",
-    "hardhat:tsc": "yarn workspace @minipay/hardhat tsc",
-    "hardhat:build": "yarn workspace @minipay/hardhat build",
-    "hardhat:clean": "yarn workspace @minipay/hardhat clean",
-    "hardhat:run:node": "yarn workspace @minipay/hardhat run:node",
-    "hardhat:test": "yarn workspace @minipay/hardhat test",
-    "hardhat:prettier": "yarn workspace @minipay/hardhat prettier"
+    "minipay:dev": "yarn workspace @easyfarm/minipay dev",
+    "minipay:build": "yarn workspace @easyfarm/minipay build",
+    "minipay:start": "yarn workspace @easyfarm/minipay start",
+    "minipay:lint": "yarn workspace @easyfarm/minipay lint",
+    "webclient:dev": "yarn workspace @easyfarm/webclient dev",
+    "webclient:build": "yarn workspace @easyfarm/webclient build",
+    "webclient:start": "yarn workspace @easyfarm/webclient start",
+    "webclient:lint": "yarn workspace @easyfarm/webclient lint",
+    "hardhat:compile": "yarn workspace @easyfarm/hardhat compile",
+    "hardhat:tsc": "yarn workspace @easyfarm/hardhat tsc",
+    "hardhat:build": "yarn workspace @easyfarm/hardhat build",
+    "hardhat:clean": "yarn workspace @easyfarm/hardhat clean",
+    "hardhat:run:node": "yarn workspace @easyfarm/hardhat run:node",
+    "hardhat:test": "yarn workspace @easyfarm/hardhat test",
+    "hardhat:prettier": "yarn workspace @easyfarm/hardhat prettier"
   },
   "version": "1.0.0",
   "workspaces": [
