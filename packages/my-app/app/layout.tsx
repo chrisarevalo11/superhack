@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
-import { WagmiProvider } from "wagmi";
-import { celoAlfajores, celo } from "wagmi/chains";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
-import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { Providers } from "@/lib/Providers";
+import { Toaster } from "@/components/ui/toaster";
 import Footer from "@/components/Footer";
 
-const queryClient = new QueryClient();
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +29,7 @@ export default function RootLayout({
           <>
             <Navbar />
             {children}
+            <Toaster />
             <Footer />
           </>
         </Providers>

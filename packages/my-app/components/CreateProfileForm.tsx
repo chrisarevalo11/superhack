@@ -17,8 +17,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { createProfileSchema } from "@/lib/schema";
 import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { LoaderCircle } from "lucide-react";
 
 export function CreateProfileForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof createProfileSchema>>({
     resolver: zodResolver(createProfileSchema),
     defaultValues: {
@@ -31,6 +37,20 @@ export function CreateProfileForm() {
 
   function onSubmit(values: z.infer<typeof createProfileSchema>) {
     console.log(values);
+    setIsLoading(true);
+    try {
+      // TODO: Add logic to distribute
+      toast({
+        description: "Profile created successfully.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "The profile could not be created. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -101,7 +121,13 @@ export function CreateProfileForm() {
           )}
         />
 
-        <Button type="submit">Create Profile</Button>
+        <Button disabled={isLoading} type="submit">
+          {isLoading ? (
+            <LoaderCircle className="animate-spin mr-2 h-4 w-4" />
+          ) : (
+            "Create Round"
+          )}
+        </Button>
       </form>
     </Form>
   );
