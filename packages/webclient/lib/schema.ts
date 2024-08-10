@@ -46,7 +46,6 @@ export const createRoundSchema = z.object({
   description: z
     .string()
     .max(1000, { message: "Description cannot exceed 1000 characters." }),
-  amount: z.number().positive({ message: "Amount must be a positive number." }),
+  amount: z.string().min(0, { message: "Amount is required." }),
   tags: tagsValidation,
 });
-

@@ -17,22 +17,41 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createRoundSchema } from "@/lib/schema";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { LoaderCircle } from "lucide-react";
 
 export function CreateRoundForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof createRoundSchema>>({
     resolver: zodResolver(createRoundSchema),
     defaultValues: {
       roundName: "",
       image: "",
       description: "",
-      amount: 0,
+      amount: "",
       tags: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof createRoundSchema>) {
-    // Handle form submission
     console.log(values);
+    setIsLoading(true);
+    try {
+      // TODO: Add logic to distribute
+      toast({
+        description: "Round created successfully.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "The round could not be created. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -140,7 +159,13 @@ export function CreateRoundForm() {
           )}
         />
 
-        <Button type="submit">Create Round</Button>
+        <Button disabled={isLoading} type="submit">
+          {isLoading ? (
+            <LoaderCircle className="animate-spin mr-2 h-4 w-4" />
+          ) : (
+            "Create Round"
+          )}
+        </Button>
       </form>
     </Form>
   );
