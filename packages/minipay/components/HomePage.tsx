@@ -5,6 +5,7 @@ import { useAccount } from 'wagmi';
 import WorldIDVerification from './WorldIDVerification';
 import { useWorldID } from '../contexts/WorldIDContext';
 import { useRouter } from 'next/navigation';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function HomePage() {
   const [userAddress, setUserAddress] = useState('');
@@ -35,16 +36,14 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <div className="h1">
-        Welcome To EasyFarm ! 
-      </div>
+      <div className="h1">Welcome To EasyFarm !</div>
       {isConnected ? (
         <>
           <div className="h2 text-center">Your address: {userAddress}</div>
           {!isWorldIDVerified && <WorldIDVerification />}
         </>
       ) : (
-        <div>No Wallet Connected</div>
+        <ConnectButton />
       )}
     </div>
   );
