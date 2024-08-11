@@ -7,10 +7,12 @@ import { useConnect } from 'wagmi';
 import { injected } from 'wagmi/connectors';
 
 export default function Header() {
+  const [hideConnectBtn, setHideConnectBtn] = useState(false);
   const { connect } = useConnect();
   // console.log('hi')
   useEffect(() => {
     if (window.ethereum && window.ethereum.isMiniPay) {
+      setHideConnectBtn(true);
       connect({ connector: injected({ target: 'metaMask' }) });
     }
   }, []);
@@ -52,14 +54,14 @@ export default function Header() {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <div className="hidden md:block">
+                {!hideConnectBtn && (
                   <ConnectButton
                     showBalance={{
                       smallScreen: true,
                       largeScreen: false,
                     }}
                   />
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -73,9 +75,7 @@ export default function Header() {
               >
                 Home
               </Disclosure.Button>
-              <ConnectButton
-                showBalance={{ smallScreen: true, largeScreen: false }}
-              />
+              {/* Add here your custom menu elements */}
             </div>
           </Disclosure.Panel>
         </>

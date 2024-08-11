@@ -5,7 +5,6 @@ import { useAccount } from 'wagmi';
 import WorldIDVerification from './WorldIDVerification';
 import { useWorldID } from '../contexts/WorldIDContext';
 import { useRouter } from 'next/navigation';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function HomePage() {
   const [userAddress, setUserAddress] = useState('');
@@ -43,7 +42,7 @@ export default function HomePage() {
           {!isWorldIDVerified && <WorldIDVerification />}
         </>
       ) : (
-        <ConnectButton />
+        <div>No Wallet Connected</div>
       )}
     </div>
   );
