@@ -1,27 +1,24 @@
 "use client";
 
-import React, { ReactNode } from "react";
 import {
   getDefaultConfig,
-  lightTheme,
   RainbowKitProvider,
+  lightTheme,
 } from "@rainbow-me/rainbowkit";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
-import { celo, celoAlfajores } from "wagmi/chains";
+import { celoAlfajores, celo } from "wagmi/chains";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
-
-const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID || "";
-
-const config = getDefaultConfig({
-  appName: "My RainbowKit App",
-  projectId,
+export const config = getDefaultConfig({
+  appName: "EasyFarm",
+  projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID ?? "",
   chains: [celoAlfajores, celo],
   ssr: true,
 });
 
-export function Providers({ children }: { children: ReactNode }) {
+const queryClient = new QueryClient();
+
+export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>

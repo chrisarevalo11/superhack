@@ -3,11 +3,11 @@ import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 
 import "@rainbow-me/rainbowkit/styles.css";
-import { Providers } from "@/lib/Providers";
 import { Toaster } from "@/components/ui/toaster";
 import Footer from "@/components/Footer";
 
 import "./globals.css";
+import Providers from "@/lib/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 

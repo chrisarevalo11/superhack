@@ -20,10 +20,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { LoaderCircle } from "lucide-react";
+import { useWriteContract, usePublicClient, useAccount } from "wagmi";
+import { waitForTransactionReceipt } from "wagmi/actions";
+import { abi } from "@/assets/abi/registryAbi";
+import { REGISTRY_CONTRACT } from "@/lib/constants";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { config } from "@/lib/Providers";
+import { uploadFileToIPFS, uploadJSONToIPFS } from "@/lib/ipfsService";
 
 export function CreateProfileForm() {
+  const { address, isConnected } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
+  const [image, setImage] = useState<File | null>(null);
+  const publicClient = usePublicClient();
   const { toast } = useToast();
+
+  const { writeContractAsync } = useWriteContract();
 
   const form = useForm<z.infer<typeof createProfileSchema>>({
     resolver: zodResolver(createProfileSchema),
@@ -35,11 +47,59 @@ export function CreateProfileForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof createProfileSchema>) {
+  async function onSubmit(values: z.infer<typeof createProfileSchema>) {
     console.log(values);
     setIsLoading(true);
+    if (!isConnected || !address || !publicClient) {
+      toast({
+        variant: "destructive",
+        description: "Please connect your wallet.",
+      });
+      return;
+    }
+
+    if (!image) {
+      toast({
+        variant: "destructive",
+        description: "Please upload an image.",
+      });
+      return;
+    }
+
     try {
-      // TODO: Add logic to distribute
+      const imgHash = await uploadFileToIPFS(image);
+
+      const metadata = {
+        name: values.name,
+        bio: values.bio,
+        profilePhoto: imgHash,
+        wallet: values.wallet,
+      };
+      const metadataHash = await uploadJSONToIPFS(metadata);
+
+      console.log(metadataHash);
+
+      const nonce = await publicClient.getTransactionCount({
+        address,
+      });
+
+      const components = {
+        protocol: 1,
+        pointer: metadataHash,
+      };
+
+      const txHash = await writeContractAsync({
+        abi,
+        address: REGISTRY_CONTRACT,
+        functionName: "createProfile",
+        args: [nonce, values.name, components, address, [values.wallet]],
+      });
+
+      await waitForTransactionReceipt(config, {
+        confirmations: 1,
+        hash: txHash,
+      });
+
       toast({
         description: "Profile created successfully.",
       });
@@ -83,7 +143,17 @@ export function CreateProfileForm() {
             <FormItem>
               <FormLabel>Profile Photo</FormLabel>
               <FormControl>
-                <Input {...field} type="file" />
+                <Input
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setImage(file);
+                    }
+                  }}
+                  type="file"
+                />
               </FormControl>
               <FormDescription>Upload your profile photo.</FormDescription>
               <FormMessage />
@@ -121,13 +191,17 @@ export function CreateProfileForm() {
           )}
         />
 
-        <Button disabled={isLoading} type="submit">
-          {isLoading ? (
-            <LoaderCircle className="animate-spin mr-2 h-4 w-4" />
-          ) : (
-            "Create Round"
-          )}
-        </Button>
+        {isConnected ? (
+          <Button disabled={isLoading} type="submit">
+            {isLoading ? (
+              <LoaderCircle className="animate-spin mr-2 h-4 w-4" />
+            ) : (
+              "Create Round"
+            )}
+          </Button>
+        ) : (
+          <ConnectButton />
+        )}
       </form>
     </Form>
   );
