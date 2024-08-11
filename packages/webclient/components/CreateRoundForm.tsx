@@ -20,8 +20,15 @@ import { createRoundSchema } from "@/lib/schema";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { LoaderCircle } from "lucide-react";
+import { useAccount, useWriteContract } from "wagmi";
+import { waitForTransactionReceipt } from "wagmi/actions";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { STRATEGY_CONTRACT } from "@/lib/constants";
+import { abi } from "@/assets/abi/strategyAbi";
+import { config } from "@/lib/Providers";
 
 export function CreateRoundForm() {
+  const { address, isConnected } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -36,15 +43,31 @@ export function CreateRoundForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof createRoundSchema>) {
-    console.log(values);
+  const { writeContractAsync } = useWriteContract();
+
+  async function onSubmit(values: z.infer<typeof createRoundSchema>) {
     setIsLoading(true);
     try {
-      // TODO: Add logic to distribute
+      console.log("llega");
+
+      const txHash = await writeContractAsync({
+        abi,
+        address: STRATEGY_CONTRACT,
+        functionName: "createPool",
+        args: [values.roundName, values.description, values.amount],
+      });
+
+      await waitForTransactionReceipt(config, {
+        confirmations: 1,
+        hash: txHash,
+      });
+
       toast({
         description: "Round created successfully.",
       });
     } catch (error) {
+      console.error(error);
+
       toast({
         variant: "destructive",
         description: "The round could not be created. Please try again.",
@@ -159,13 +182,17 @@ export function CreateRoundForm() {
           )}
         />
 
-        <Button disabled={isLoading} type="submit">
-          {isLoading ? (
-            <LoaderCircle className="animate-spin mr-2 h-4 w-4" />
-          ) : (
-            "Create Round"
-          )}
-        </Button>
+        {isConnected ? (
+          <Button disabled={isLoading} type="submit">
+            {isLoading ? (
+              <LoaderCircle className="animate-spin mr-2 h-4 w-4" />
+            ) : (
+              "Create Round"
+            )}
+          </Button>
+        ) : (
+          <ConnectButton />
+        )}
       </form>
     </Form>
   );

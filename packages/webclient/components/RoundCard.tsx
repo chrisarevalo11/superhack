@@ -11,9 +11,9 @@ export default function RoundCard({
   id,
   title,
   description,
-  image,
+  image = "/images/agriculture.jpg",
   amount,
-  tags,
+  tags = ["agriculture", "farming"],
 }: Round) {
   const router = useRouter();
 
